@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'storage',
     'users',
+    'rfid_datacoming'
 ]
 
 MIDDLEWARE = [
