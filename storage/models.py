@@ -6,6 +6,7 @@ from django.utils import timezone
 class Teammates(models.Model):
     name = models.CharField(max_length=30)
     branch = models.CharField(max_length=30)
+    email = models.EmailField(max_length=254, null=True, blank=True)
     division = models.CharField(max_length=20)
     current_project = models.CharField(max_length=30)
     domain = models.CharField(max_length=30)
