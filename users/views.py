@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
 from django.contrib import messages
 from .forms import UserRegisterForm, StorageUpdateForm, ProfileUserUpdateForm
 from storage.models import Teammates
@@ -9,17 +10,12 @@ from storage.models import Teammates
 # Create your views here.
 def register(request):
     if request.method == 'POST':
-         form = UserRegisterForm(request.POST)
-         if form.is_valid():
-              form.save()
-              username = form.cleaned_data.get('username')
-              messages.success(request, f'Account created for {username}, You are now able to login!')
-              return redirect('profile')
-    else:
-          form = UserRegisterForm()
-    return render(request,'user/register.html',{'form': form})
-
-@login_required
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()  # Saves the user to the database
+            login(request, user)  # Logs the new user in on the spot
+            return redirect('profile')
+        
 def profile(request):
      user_storage_records = Teammates.objects.filter(author = request.user)
 
