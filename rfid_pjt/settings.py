@@ -128,3 +128,16 @@ LOGIN_REDIRECT_URL = 'profile'
 
 # The URL or URL name where users are directed after logging out
 LOGOUT_REDIRECT_URL = 'login'
+
+import os
+
+from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Absolute filesystem path to the directory that will hold user-uploaded media.
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# URL that handles the media served from MEDIA_ROOT.
+MEDIA_URL = '/media/'

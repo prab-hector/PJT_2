@@ -7,6 +7,7 @@ class Teammates(models.Model):
     name = models.CharField(max_length=30)
     branch = models.CharField(max_length=30)
     email = models.EmailField(max_length=254, null=True, blank=True)
+    image = models.ImageField(default='profile_pics/default.png', upload_to='profile_pics')
     division = models.CharField(max_length=20)
     current_project = models.CharField(max_length=30)
     domain = models.CharField(max_length=30)

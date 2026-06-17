@@ -59,9 +59,14 @@
                 {% if records %}
                     {% for record in records %}
                         <div class="card shadow-sm border-0 mb-4 bg-white">
-                            <div class="card-header bg-white font-weight-bold text-info border-0 pt-4 pb-0" style="font-size: 1.2rem;">
-                                Item Name: {{ record.name }}
+                            <div class="card-header bg-white font-weight-bold text-info border-0 pt-4 pb-0 d-flex align-items-center justify-content-between" style="font-size: 1.2rem;">
+                                <span>Item Name: {{ record.name }}</span>
+                                
+                                {% if record.image %}
+                                    <img src="{{ record.image.url }}" class="rounded-circle border border-info shadow-sm" alt="{{ record.name }}" style="width: 55px; height: 55px; object-fit: cover;">
+                                {% endif %}
                             </div>
+                            
                             <div class="card-body">
                                 
                                 <div class="mb-4 p-3 bg-light rounded border-left border-info" style="border-left-width: 4px !important;">
