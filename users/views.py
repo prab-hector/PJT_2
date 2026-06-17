@@ -15,6 +15,13 @@ def register(request):
             user = form.save()  # Saves the user to the database
             login(request, user)  # Logs the new user in on the spot
             return redirect('profile')
+    else:
+        # This handles the GET request when a user first visits the page
+        form = UserRegisterForm()
+        
+    # This return statement must be outside the if/else conditions
+    return render(request, 'user/register.html', {'form': form})
+        
         
 def profile(request):
      user_storage_records = Teammates.objects.filter(author = request.user)
@@ -22,7 +29,7 @@ def profile(request):
      context = {
           'records': user_storage_records
      }
-     return render(request, 'User/profile.html',context)
+     return render(request, 'user/profile.html',context)
 
 @login_required
 def edit_profile(request):

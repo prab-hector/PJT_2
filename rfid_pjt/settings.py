@@ -123,4 +123,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
-LOGIN_URL = 'login'
+# The URL or URL name where users are directed after logging in
+LOGIN_REDIRECT_URL = 'profile'
+
+# The URL or URL name where users are directed after logging out
+LOGOUT_REDIRECT_URL = 'login'
