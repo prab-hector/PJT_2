@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 # Create your models here.
-class Storage(models.Model):
+class Teammates(models.Model):
     name = models.CharField(max_length=30)
     branch = models.CharField(max_length=30)
     division = models.CharField(max_length=20)
@@ -18,3 +18,8 @@ class Storage(models.Model):
 
     def __str__(self):
         return self.name
+    
+class AttendanceLog(models.Model):
+    Teammates = models.ForeignKey(Teammates, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, default="Present")
