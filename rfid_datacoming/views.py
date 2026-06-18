@@ -1,18 +1,22 @@
 from django.shortcuts import render
-from storage.models import Teammates,AttendanceLog
 from django.utils import timezone
-
-# Create your views here.
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+
+# Model imports
+from storage.models import Teammates, AttendanceLog
 from .models import RFIDLog
 
+
 @api_view(['POST'])
-@permission_classes([AllowAny]) # Allows the ESP32 to connect without authentication
+@permission_classes([AllowAny])
 def receive_rfid_drf(request):
-    scanned_uid = request.data.get('uid') # DRF automatically parses JSON
+    """
+    Logs every raw RFID scan directly into the database.
+    """
+    scanned_uid = request.data.get('uid')
     
     if scanned_uid:
         RFIDLog.objects.create(uid=scanned_uid)
@@ -20,26 +24,23 @@ def receive_rfid_drf(request):
         
     return Response({"error": "No UID provided"}, status=status.HTTP_400_BAD_REQUEST)
 
-    user_exists = Employee.objects.filter(rfid_uid=scanned_uid).exists()
-    
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def check_attendance(request):
-    # Fetch the scanned UID from the ESP32 payload
+    """
+    Validates the RFID UID, logs attendance if matched, or denies entry.
+    """
     scanned_uid = request.data.get('uid')
     
     if not scanned_uid:
         return Response({"error": "No UID provided"}, status=status.HTTP_400_BAD_REQUEST)
     
-    # 2. Your If-Else Logic using Django DB queries
-    # Look for a registered user matching this RFID tag
-    user_exists = Teammates.objects.filter(rfid_uid=scanned_uid).exists()
-    
-    if user_exists:
-        # Fetch the user profile data
+    try:
+        # Optimizing database hit: Attempting to grab the user directly
         user = Teammates.objects.get(rfid_uid=scanned_uid)
         
-        # Log their attendance in the database
+        # Log attendance record
         AttendanceLog.objects.create(
             employee=user,
             timestamp=timezone.now(),
@@ -52,10 +53,10 @@ def check_attendance(request):
             "message": f"Welcome, {user.name}!"
         }, status=status.HTTP_200_OK)
         
-    else:
-        # The scanned ID does not match any ID in your storage
+    except Teammates.DoesNotExist:
+        # Code block triggers if no match is found in the database
         print(f"[REJECTED] Unknown RFID Tag: {scanned_uid}")
         return Response({
             "status": "denied",
             "message": "Access Denied: Unknown Card"
-        }, status=status.HTTP_401_UNAUTHORIZED)   
+        }, status=status.HTTP_401_UNAUTHORIZED)
